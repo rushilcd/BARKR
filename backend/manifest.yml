@@ -1,0 +1,6 @@
+applications:
+- name: rona-hub
+  command: npm start
+  path: .
+  memory: 128M
+  instances: 1
