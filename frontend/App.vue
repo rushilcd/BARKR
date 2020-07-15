@@ -1,7 +1,31 @@
+
 <template>
   <view class="container">
-    <Statusbar color = "#FFCE00"/> 
+    <Statusbar color = "#FFCEE"/> 
     <Header title="MaskMe" />
+    <image
+    :style="{width: 250, height: 250, marginTop: 140, marginLeft: 60}"
+          :source="{uri: 'https://res.cloudinary.com/sagacity/image/upload/c_crop,h_3333,w_5000,x_0,y_0/c_limit,dpr_3.0,f_auto,fl_lossy,q_80,w_500/masks_ebawwg.png'}"
+
+    />
+    <button
+        :on-press="Login"
+        title="Login"
+        color="#841584"
+        accessibility-label="user name + password"
+    />
+ 
+  <button
+        :on-press="SignUp"
+        title="Sign Up"
+        color="#841584"
+        accessibility-label="user name + password"
+    />
+
+
+
+
+        
   </view>
 </template>
 
@@ -13,22 +37,17 @@ export default {
   {
     Statusbar,
     Header
-  }
+  },
+ methods: {
+        Login: function() {
+            
+        },
+        SignUp: function(){
+
+        }
+    }
+
+
+
+
 }
-</script>
-
-
-
-
-<style>
-.container {
-  background-color: white;
-  flex: 1;
-}
-
-
-.text-color-primary {
-  color: lightgray;
-  height: 20px;
-}
-</style>
