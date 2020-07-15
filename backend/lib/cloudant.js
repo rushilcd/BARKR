@@ -3,8 +3,12 @@ const Cloudant = require('@cloudant/cloudant');
 const cloudant_id = process.env.CLOUDANT_ID || '<cloudant_id>'
 const cloudant_apikey = process.env.CLOUDANT_IAM_APIKEY || '<cloudant_apikey>';
 
+const _ = require('lodash');
+
 // UUID creation
 const uuidv4 = require('uuid/v4');
+
+import { DB_SHOP, DB_NEWS_TWITTER, DB_NEWS_RESEARCH, DB_NEWS_POLITICS } from '../constants';
 
 var cloudant = new Cloudant({
     account: cloudant_id,
@@ -16,8 +20,7 @@ var cloudant = new Cloudant({
   })
 
 // Cloudant DB reference
-let db;
-let db_name = "community_db";
+const db_names = [DB_SHOP, DB_NEWS_TWITTER, DB_NEWS_RESEARCH, DB_NEWS_POLITICS];
 
 /**
  * Connects to the Cloudant DB, creating it if does not already exist
@@ -39,19 +42,15 @@ const dbCloudantConnect = () => {
                 reject(err);
             } else {
                 cloudant.db.list().then((body) => {
-                    if (!body.includes(db_name)) {
-                        console.log('DB Does not exist..creating: ' + db_name);
-                        cloudant.db.create(db_name).then(() => {
-                            if (err) {
-                                console.log('DB Create failure: ' + err.message + ' for Cloudant ID: ' +
-                                cloudant_id);
-                                reject(err);
-                            }
-                        })
-                    }
-                    let db = cloudant.use(db_name);
-                    console.log('Connect success! Connected to DB: ' + db_name);
-                    resolve(db);
+                    _.forEach(db_names, (db_name) => { 
+                        if (!body.includes(db_name)) {
+                            console.log('DB Does not exist..check logs: ' + db_name);
+                            reject(new Error('Missing DB'));
+                        } 
+                    });
+                    
+                    console.log('Connect success! Connected to DB: ' + db_names);
+                    resolve('success');
                 }).catch((err) => { console.log(err); reject(err); });
             }
         }));
@@ -63,43 +62,22 @@ const dbCloudantConnect = () => {
     console.log('Initializing Cloudant connection...', 'getDbConnection()');
     dbCloudantConnect().then((database) => {
         console.log('Cloudant connection initialized.', 'getDbConnection()');
-        db = database;
+        //db = database;
     }).catch((err) => {
         console.log('Error while initializing DB: ' + err.message, 'getDbConnection()');
         throw err;
     });
 })();
 
-/**
- * Find all resources that match the specified partial name.
- * 
- * @param {String} type
- * @param {String} partialName
- * @param {String} userID
- * 
- * @return {Promise} Promise - 
- *  resolve(): all resource objects that contain the partial
- *          name, type or userID provided, or an empty array if nothing
- *          could be located that matches. 
- *  reject(): the err object from the underlying data store
- */
-function find(type, partialName, userID) {
+
+function findByLink(db_name, link) {
     return new Promise((resolve, reject) => {
         let selector = {}
-        if (type) {
-            selector['type'] = type;
-        }
-        if (partialName) {
-            let search = `(?i).*${partialName}.*`;
-            selector['name'] = {'$regex': search};
+        if (!link) reject(new Error('empty link'));
+        const trimmedLink = _.trim(link);
 
-        }
-        if (userID) {
-            selector['userID'] = userID;
-        }
-        
-        db.find({ 
-            'selector': selector
+        cloudant.use(db_name).find({ 
+            'selector': {'link': trimmedLink}
         }, (err, documents) => {
             if (err) {
                 reject(err);
@@ -109,6 +87,95 @@ function find(type, partialName, userID) {
         });
     });
 }
+
+
+function cleanUrl(url) { 
+    const noProt = _.replace(url, /^https?\:\/\//i, ""); 
+    return _.split(noProt, '/')[0];
+}
+
+function findById(db_name, id) {
+    return new Promise((resolve, reject) => {
+        let selector = {}
+        if (!id) reject(new Error('empty id'));
+        const trimmedId = _.trim(id);
+
+        cloudant.use(db_name).find({ 
+            'selector': {'_id': trimmedId}
+        }, (err, documents) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({ data: JSON.stringify(documents.docs), statusCode: 200});
+            }
+        });
+    });
+}
+
+/**
+ * Create a resource with the specified attributes
+ * 
+ * @param {String} title - the title of the news
+ * @param {String} link - the link of the news
+ * @param {String} description - the description of the news
+ * 
+ * @return {Promise} - promise that will be resolved (or rejected)
+ * when the call to the DB completes
+ */
+function addResearchNews(title, link, description) {
+    return new Promise((resolve, reject) => {
+        const currentTime = _.now();
+        const news = {
+            _id: currentTime + ':' + cleanUrl(_.trim(link)),
+            title: _.trim(title),
+            link: _.trim(link),
+            description: _.trim(description),
+            timestamp: currentTime
+        };
+        cloudant.use(DB_NEWS_RESEARCH).insert(news, (err, result) => {
+            if (err) {
+                console.log('Error occurred: ' + err.message, 'create()');
+                reject(err);
+            } else {
+                resolve({ data: { createdId: result._id, createdRevId: result.rev }, statusCode: 201 });
+            }
+        });
+    });
+}
+
+
+/**
+ * Create a resource with the specified attributes
+ * 
+ * @param {String} text - the text in the tweet
+ * @param {String} link - the link of the tweet
+ * @param {String} author - the author of the tweet
+ * 
+ * @return {Promise} - promise that will be resolved (or rejected)
+ * when the call to the DB completes
+ */
+function addTwitterNews(text, link, author) {
+    return new Promise((resolve, reject) => {
+        const currentTime = _.now();
+        const news = {
+            _id: currentTime + ':' + cleanUrl(_.trim(link)),
+            text: _.trim(text),
+            link: _.trim(link),
+            author: _.trim(author),
+            timestamp: currentTime
+        };
+        cloudant.use(DB_NEWS_TWITTER).insert(news, (err, result) => {
+            if (err) {
+                console.log('Error occurred: ' + err.message, 'create()');
+                reject(err);
+            } else {
+                resolve({ data: { createdId: result._id, createdRevId: result.rev }, statusCode: 201 });
+            }
+        });
+    });
+}
+
+
 
 /**
  * Delete a resource that matches a ID.
@@ -137,46 +204,6 @@ function deleteById(id, rev) {
     });
 }
 
-/**
- * Create a resource with the specified attributes
- * 
- * @param {String} type - the type of the item
- * @param {String} name - the name of the item
- * @param {String} description - the description of the item
- * @param {String} quantity - the quantity available 
- * @param {String} location - the GPS location of the item
- * @param {String} contact - the contact info 
- * @param {String} userID - the ID of the user 
- * 
- * @return {Promise} - promise that will be resolved (or rejected)
- * when the call to the DB completes
- */
-function create(type, name, description, quantity, location, contact, userID) {
-    return new Promise((resolve, reject) => {
-        let itemId = uuidv4();
-        let whenCreated = Date.now();
-        let item = {
-            _id: itemId,
-            id: itemId,
-            type: type,
-            name: name,
-            description: description,
-            quantity: quantity,
-            location: location,
-            contact: contact,
-            userID: userID,
-            whenCreated: whenCreated
-        };
-        db.insert(item, (err, result) => {
-            if (err) {
-                console.log('Error occurred: ' + err.message, 'create()');
-                reject(err);
-            } else {
-                resolve({ data: { createdId: result.id, createdRevId: result.rev }, statusCode: 201 });
-            }
-        });
-    });
-}
 
 /**
  * Update a resource with the requested new attribute values
@@ -195,7 +222,7 @@ function create(type, name, description, quantity, location, contact, userID) {
  * 
  * @return {Promise} - promise that will be resolved (or rejected)
  * when the call to the DB completes
- */
+
 function update(id, type, name, description, quantity, location, contact, userID) {
     return new Promise((resolve, reject) => {
         db.get(id, (err, document) => {
@@ -234,11 +261,58 @@ function info() {
             return res;
         });
 };
+*/
+
+
+/**
+ * Find all resources that match the specified partial name.
+ * 
+ * @param {String} type
+ * @param {String} partialName
+ * @param {String} userID
+ * 
+ * @return {Promise} Promise - 
+ *  resolve(): all resource objects that contain the partial
+ *          name, type or userID provided, or an empty array if nothing
+ *          could be located that matches. 
+ *  reject(): the err object from the underlying data store
+ 
+function find(type, partialName, userID) {
+    return new Promise((resolve, reject) => {
+        let selector = {}
+        if (type) {
+            selector['type'] = type;
+        }
+        if (partialName) {
+            let search = `(?i).*${partialName}.*`;
+            selector['name'] = {'$regex': search};
+
+        }
+        if (userID) {
+            selector['userID'] = userID;
+        }
+        
+        db.find({ 
+            'selector': selector
+        }, (err, documents) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({ data: JSON.stringify(documents.docs), statusCode: 200});
+            }
+        });
+    });
+}
+*/
 
 module.exports = {
     deleteById: deleteById,
     create: create,
     update: update,
     find: find,
-    info: info
+    info: info,
+    findById: findById,
+    findByLink: findByLink,
+    addResearchNews: addResearchNews,
+    addTwitterNews: addTwitterNews,
   };
