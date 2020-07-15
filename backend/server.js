@@ -23,35 +23,6 @@ app.get('/', (req, res) => {
 });
 
 /**
- * Get a list of resources
- *
- * The query string may contain the following qualifiers:
- * 
- * - type
- * - name
- * - userID
- *
- * A list of resource objects will be returned (which can be an empty list)
- */
-app.get('/api/resource', (req, res) => {
-  const type = req.query.type;
-  const name = req.query.name;
-  const userID = req.query.userID;
-  cloudant
-    .find(type, name, userID)
-    .then(data => {
-      if (data.statusCode != 200) {
-        res.sendStatus(data.statusCode)
-      } else {
-        res.send(data.data)
-      }
-    })
-    .catch(err => handleError(res, err));
-});
-
-
-
-/**
  * Upload a single research news
  *
  * The body must contain:
@@ -206,3 +177,31 @@ app.patch('/api/resource/:id', (req, res) => {
     .catch(err => handleError(res, err));
 });
  */
+
+/**
+ * Get a list of resources
+ *
+ * The query string may contain the following qualifiers:
+ * 
+ * - type
+ * - name
+ * - userID
+ *
+ * A list of resource objects will be returned (which can be an empty list)
+ *
+app.get('/api/resource', (req, res) => {
+  const type = req.query.type;
+  const name = req.query.name;
+  const userID = req.query.userID;
+  cloudant
+    .find(type, name, userID)
+    .then(data => {
+      if (data.statusCode != 200) {
+        res.sendStatus(data.statusCode)
+      } else {
+        res.send(data.data)
+      }
+    })
+    .catch(err => handleError(res, err));
+});
+/
