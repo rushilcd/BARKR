@@ -1,11 +1,13 @@
 /**
- * Metro configuration for React Native
- * https://github.com/facebook/react-native
+ * Metro configuration for Vue Native
+ * Borrowed and modified from React Native
  *
  * @format
  */
 
 const { getDefaultConfig } = require("metro-config");
+
+const fs = require('fs');
 
 module.exports = (async () => {
   const {

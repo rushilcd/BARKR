@@ -1,36 +1,36 @@
 {
   "expo": {
-    "name": "covid-app",
-    "slug": "covid-app",
-    "version": "1.0.0",
+    "sdkVersion": "35.0.0",
+    "icon": "./assets/nblogo.png",
+    "slug": "kitchensinkvuenative",
+    "loading": {
+      "hideExponentText": true,
+      "backgroundImage": "./assets/splashscreen.png"
+    },
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
+    "primaryColor": "#cccccc",
     "packagerOpts": {
-      "config": "metro.config.js",
       "sourceExts": [
+        "vue",
         "js",
         "json",
         "ts",
-        "tsx",
-        "vue"
+        "tsx"
+      ],
+      "assetExts": [
+        "ttf"
       ]
-    }
+    },
+    "androidStatusBarColor": "#334393",
+    "androidStatusBar": {
+      "barStyle": "light-content",
+      "backgroundColor": "#334393"
+    },
+    "name": "kitchenSink-vue-native",
+    "version": "0.1.0",
+    "platforms": [
+      "android",
+      "ios"
+    ]
   }
 }
