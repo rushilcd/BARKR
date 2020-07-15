@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "COVID-app",
-    "slug": "COVID-app",
+    "name": "covid-app",
+    "slug": "covid-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
