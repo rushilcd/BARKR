@@ -3,6 +3,7 @@ require('dotenv').config({silent: true})
 const express = require('express');
 const bodyParser = require('body-parser');
 const _ = require('lodash');
+const moment = require('moment');
 
 //const assistant = require('./lib/assistant.js');
 const port = process.env.PORT || 3000
@@ -99,6 +100,36 @@ app.post('/api/upload/news/twitter', (req, res) => {
     })
     .catch(err => handleError(res, err));
 });
+
+
+const pagination_unit = 'days';
+/**
+ * Get items from db by time units in the past 
+ * at the moment, each page is 1 day
+ */
+app.get('/api/getPage',(req, res) => {
+  const page = req.query.page;
+  let pageNum;
+  if (_.isString(page)) {
+    pageNum = _.parseInt(page);
+    if (!_.isInteger(pageNum)) return res.status(400).json({ errors: "`page` is not integer"});
+  }
+  if (page <= 0) return res.status(400).json({ errors: "`page` is not positive"});
+
+  const end = moment().subtract(page - 1, pagination_unit);
+  const start = moment().subtract(page, pagination_unit);
+  cloudant
+    .getByTimeRange(req.query.db_name, start.valueOf(), end.valueOf())
+    .then(data => {
+      if (data.statusCode != 200) {
+        res.sendStatus(data.statusCode)
+      } else {
+        res.send(data.data)
+      }
+    })
+    .catch(err => handleError(res, err));
+});
+
 
 /**
  * Get a single item by link
@@ -204,4 +235,4 @@ app.get('/api/resource', (req, res) => {
     })
     .catch(err => handleError(res, err));
 });
-/
+*/

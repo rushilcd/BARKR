@@ -69,10 +69,56 @@ const dbCloudantConnect = () => {
     });
 })();
 
+function getByTimeStart(db_name, start) {
+    return new Promise((resolve, reject) => {
+        cloudant.use(db_name).find({ 
+            'selector': {
+                'timestamp': {"$gte": start }
+            }
+        }, (err, documents) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({ data: JSON.stringify(documents.docs), statusCode: 200});
+            }
+        });
+    });
+}
+
+function getByTimeEnd(db_name, end) {
+    return new Promise((resolve, reject) => {
+        cloudant.use(db_name).find({ 
+            'selector': {
+                'timestamp': {"$lte": end }
+            }
+        }, (err, documents) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({ data: JSON.stringify(documents.docs), statusCode: 200});
+            }
+        });
+    });
+}
+
+function getByTimeRange(db_name, start, end) {
+    return new Promise((resolve, reject) => {
+        cloudant.use(db_name).find({ 
+            'selector': {
+                'timestamp': {"$gte": start,"$lte": end}
+            }
+        }, (err, documents) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({ data: JSON.stringify(documents.docs), statusCode: 200});
+            }
+        });
+    });
+}
 
 function findByLink(db_name, link) {
     return new Promise((resolve, reject) => {
-        let selector = {}
         if (!link) reject(new Error('empty link'));
         const trimmedLink = _.trim(link);
 
@@ -88,15 +134,8 @@ function findByLink(db_name, link) {
     });
 }
 
-
-function cleanUrl(url) { 
-    const noProt = _.replace(url, /^https?\:\/\//i, ""); 
-    return _.split(noProt, '/')[0];
-}
-
 function findById(db_name, id) {
     return new Promise((resolve, reject) => {
-        let selector = {}
         if (!id) reject(new Error('empty id'));
         const trimmedId = _.trim(id);
 
@@ -110,6 +149,11 @@ function findById(db_name, id) {
             }
         });
     });
+}
+
+function cleanUrl(url) { 
+    const noProt = _.replace(url, /^https?\:\/\//i, ""); 
+    return _.split(noProt, '/')[0];
 }
 
 /**
@@ -307,12 +351,11 @@ function find(type, partialName, userID) {
 
 module.exports = {
     deleteById: deleteById,
-    create: create,
-    update: update,
-    find: find,
-    info: info,
     findById: findById,
     findByLink: findByLink,
     addResearchNews: addResearchNews,
     addTwitterNews: addTwitterNews,
+    getByTimeStart: getByTimeStart,
+    getByTimeEnd: getByTimeEnd,
+    getByTimeRange: getByTimeRange,
   };
