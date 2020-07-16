@@ -167,7 +167,7 @@ function cleanUrl(url) {
  * @return {Promise} - promise that will be resolved (or rejected)
  * when the call to the DB completes
  */
-function addShopItem(item_name, link, description, cost)
+function addShopItem(item_name, link, description, cost) {
     return new Promise((resolve, reject) => {
         const currentTime = _.now();
         const news = {

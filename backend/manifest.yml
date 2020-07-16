@@ -1,5 +1,5 @@
 applications:
-- name: mask-on
+- name: mask-me
   command: npm start
   path: .
   memory: 128M
