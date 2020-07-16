@@ -1,5 +1,5 @@
 <template>
-  <nb-container :style="{ backgroundColor: 'white' }">
+  <nb-container :style="{ backgroundColor: white }">
     <nb-header>
       <nb-left>
         <nb-button transparent :onPress="() => this.props.navigation.goBack()">

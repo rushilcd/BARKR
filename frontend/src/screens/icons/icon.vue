@@ -7,7 +7,7 @@
         </nb-button>
       </nb-left>
       <nb-body>
-        <nb-title>Icons</nb-title>
+        <nb-title>Mask Merch!</nb-title>
       </nb-body>
       <nb-right />
     </nb-header>

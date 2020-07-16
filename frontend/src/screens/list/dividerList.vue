@@ -7,11 +7,16 @@
         </nb-button>
       </nb-left>
       <nb-body>
-        <nb-title>List Divider</nb-title>
+        <nb-title>Contacts</nb-title>
       </nb-body>
       <nb-right />
     </nb-header>
     <nb-content padder>
+
+      <nb-list-item >
+        <nb-text>Add Friends</nb-text>
+      </nb-list-item>
+
       <nb-list-item itemDivider>
         <nb-text>A</nb-text>
       </nb-list-item>

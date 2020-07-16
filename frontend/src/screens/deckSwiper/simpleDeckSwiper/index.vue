@@ -1,5 +1,5 @@
 <template>
-  <nb-container :style="{ backgroundColor: '#fff' }">
+  <nb-container :style="{ backgroundColor: '#C9C9FE' }">
     <nb-header>
       <nb-left>
         <nb-button transparent :onPress="() => this.props.navigation.goBack()">
@@ -7,7 +7,7 @@
         </nb-button>
       </nb-left>
       <nb-body>
-        <nb-title>Simple Deck Swiper</nb-title>
+        <nb-title>Friends!</nb-title>
       </nb-body>
       <nb-right />
     </nb-header>
@@ -26,10 +26,10 @@
 <script>
 import React from "react";
 import { View, Text } from "react-native";
-import cardOne from "../../../../assets/swiper-1.png";
-import cardTwo from "../../../../assets/swiper-2.png";
-import cardThree from "../../../../assets/swiper-3.png";
-import cardFour from "../../../../assets/swiper-4.png";
+import cardOne from "../../../../assets/p1.png";
+import cardTwo from "../../../../assets/p2.png";
+import cardThree from "../../../../assets/p3.png";
+import cardFour from "../../../../assets/p4.png";
 
 import CardComponent from "../common/card";
 
@@ -38,23 +38,23 @@ export default {
     return {
       cardItemsArr: [
         {
-          text: "Card One",
-          name: "One",
+          text: "Anny shared a MaskMe!",
+          name: "+1 maskPoints",
           image: cardOne
         },
         {
-          text: "Card Two",
-          name: "Two",
+          text: "Grace shared a MaskMe!",
+          name: "+2 maskPoints",
           image: cardTwo
         },
         {
-          text: "Card Three",
-          name: "Three",
+          text: "Susan shared a MaskMe!",
+          name: "+3 maskPoints",
           image: cardThree
         },
         {
-          text: "Card Four",
-          name: "Four",
+          text: "Elssa shared a MaskMe!",
+          name: "+4 maskPoints",
           image: cardFour
         }
       ],
@@ -65,7 +65,7 @@ export default {
     handleCardEmpty() {
       return (
         <View>
-          <Text>Over </Text>
+    
         </View>
       );
     },

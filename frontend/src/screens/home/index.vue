@@ -13,7 +13,7 @@
         <nb-h3 :style="{ marginBottom: 380 }" class="text-color-white"
           ></nb-h3
         >
-        <nb-h3 class="text-color-black">MaskOn</nb-h3>
+        <nb-h3 class="text-color-black">Mask Me :)</nb-h3>
       </view>
       <view :style="{ marginBottom: 80 }">
         <nb-button

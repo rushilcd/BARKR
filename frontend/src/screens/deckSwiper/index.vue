@@ -1,5 +1,5 @@
 <template>
-  <nb-container :style="{ backgroundColor: '#fff' }">
+  <nb-container :style="{ backgroundColor: blue}">
     <nb-header>
       <nb-left>
         <nb-button
@@ -57,6 +57,6 @@ export default {
 
 <style>
 .body-icon-color {
-  color: #999;
+  color: white;
 }
 </style>

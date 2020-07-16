@@ -38,8 +38,8 @@
 
 <script>
 import { Dimensions, Platform } from "react-native";
-import drawerCover from "../../../assets/drawer-cover.png";
-import drawerImage from "../../../assets/logo-kitchen-sink.png";
+import drawerCover from "../../../assets/back.png";
+import drawerImage from "../../../assets/p5.png";
 
 const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;
@@ -74,20 +74,15 @@ export default {
         {
           name: "Shop Masks!",
           route: "Actionsheet",
-          icon: "easel",
+          icon: "cart",
           bg: "#C5F442"
         },
+        
+      
         {
-          name: "Settings",
-          route: "Header",
-          icon: "phone-portrait",
-          bg: "#477EEA",
-          types: "10"
-        },
-        {
-          name: "Footer",
-          route: "Footer",
-          icon: "phone-portrait",
+          name: "Activites",
+          route: "BadgeFooter",
+          icon: "body",
           bg: "#DA4437",
           types: "4"
         },
@@ -95,8 +90,8 @@ export default {
      
         {
           name: "MaskMyFriends",
-          route: "NHDeckSwiper",
-          icon: "swap",
+          route: "SimpleDeck",
+          icon: "happy",
           bg: "#3591FA",
           types: "2"
         },
@@ -104,16 +99,16 @@ export default {
         
         {
           name: "Rewards Center",
-          route: "NHIcon",
-          icon: "information-circle",
+          route: "Icons",
+          icon: "star-half",
           bg: "#bfe9ea",
           types: "4"
         },
        
         {
           name: "Contacts",
-          route: "NHList",
-          icon: "lock",
+          route: "NHListDivider",
+          icon: "contact",
           bg: "#5DCEE2",
           types: "8"
         },
@@ -150,8 +145,8 @@ export default {
 .drawer-image {
   align-self: center;
   position: absolute;
-  height: 75;
-  width: 210;
+  height: 100;
+  width: 200;
 }
 .list-item-badge-container {
   border-radius: 3;
