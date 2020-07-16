@@ -24,6 +24,46 @@ app.get('/', (req, res) => {
 });
 
 /**
+ * Upload a shop item
+ *
+ * The body must contain:
+ * - item_name
+ * - link
+ *
+ * The body may also contain:
+ * - description
+ * - cost
+ * 
+ * The ID and rev of the resource will be returned if successful
+ */
+app.post('/api/upload/shop/', (req, res) => {
+  if (!req.body.item_name) {
+    return res.status(422).json({ errors: "item_name must be provided"});
+  }
+  //TODO: verify url
+  if (!req.body.link) {
+    return res.status(422).json({ errors: "Link must be provided"});
+  }
+
+  const item_name = req.body.item_name;
+  const link = req.body.link;
+  const description = req.body.description || '';
+  const cost = req.body.cost || '';
+
+  cloudant
+    .addShopItem(item_name, link, description, cost)
+    .then(data => {
+      if (data.statusCode != 201) {
+        res.sendStatus(data.statusCode)
+      } else {
+        res.send(data.data)
+      }
+    })
+    .catch(err => handleError(res, err));
+});
+
+
+/**
  * Upload a single research news
  *
  * The body must contain:
@@ -107,8 +147,8 @@ const pagination_unit = 'days';
  * Get items from db by time units in the past 
  * at the moment, each page is 1 day
  */
-app.get('/api/getPage',(req, res) => {
-  const page = req.query.page;
+app.get('/api/getPage/{:page}',(req, res) => {
+  const page = req.params.page;
   let pageNum;
   if (_.isString(page)) {
     pageNum = _.parseInt(page);

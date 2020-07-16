@@ -1,5 +1,5 @@
 applications:
-- name: rona-hub
+- name: mask-on
   command: npm start
   path: .
   memory: 128M

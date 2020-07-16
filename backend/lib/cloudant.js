@@ -159,6 +159,39 @@ function cleanUrl(url) {
 /**
  * Create a resource with the specified attributes
  * 
+ * @param {String} item_name - the item_name of the item
+ * @param {String} link - the link of the item
+ * @param {String} description - the description of the item 
+ * @param {String} cost - the cost of the item
+ * 
+ * @return {Promise} - promise that will be resolved (or rejected)
+ * when the call to the DB completes
+ */
+function addShopItem(item_name, link, description, cost)
+    return new Promise((resolve, reject) => {
+        const currentTime = _.now();
+        const news = {
+            _id: currentTime + ':' + cleanUrl(_.trim(link)),
+            item_name: _.trim(item_name),
+            link: _.trim(link),
+            description: _.trim(description),
+            cost: _.trim(cost),
+            timestamp: currentTime
+        };
+        cloudant.use(DB_SHOP).insert(news, (err, result) => {
+            if (err) {
+                console.log('Error occurred: ' + err.message, 'create()');
+                reject(err);
+            } else {
+                resolve({ data: { createdId: result._id, createdRevId: result.rev }, statusCode: 201 });
+            }
+        });
+    });
+}
+
+/**
+ * Create a resource with the specified attributes
+ * 
  * @param {String} title - the title of the news
  * @param {String} link - the link of the news
  * @param {String} description - the description of the news
