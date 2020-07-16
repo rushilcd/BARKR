@@ -147,7 +147,7 @@ const pagination_unit = 'days';
  * Get items from db by time units in the past 
  * at the moment, each page is 1 day
  */
-app.get('/api/getPage/{:page}',(req, res) => {
+app.get('/api/getPage/:page',(req, res) => {
   const page = req.params.page;
   let pageNum;
   if (_.isString(page)) {
